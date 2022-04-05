@@ -4,15 +4,17 @@ moneyMinus =  document.getElementById('money-minus'),
 list  =  document.getElementById('list'),
 form =  document.getElementById('form'),
 text =  document.getElementById('text'),
-amount =  document.getElementById('amount'),
-dummyTransactions =  [
-    {id: 1, text: 'flower', amount: -20},
-    {id: 2, text: 'Salary', amount: 300},
-    {id: 3, text: 'Book', amount: -50},
-    {id: 4, text: 'Camera', amount: 150}
-];
+amount =  document.getElementById('amount')
+// dummyTransactions =  [
+//     {id: 1, text: 'flower', amount: -20},
+//     {id: 2, text: 'Salary', amount: 300},
+//     {id: 3, text: 'Book', amount: -50},
+//     {id: 4, text: 'Camera', amount: 150}
+// ];
 
-let transactions = dummyTransactions;
+const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
+
+let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 console.log(transactions)
 //Add Transaction
 
@@ -29,7 +31,17 @@ function addTransaction(e) {
         }
         transactions.push(transaction);
         addTransactionDom(transaction);
+
+        //  Update Values
+
         updateValues();
+
+        //  Update Local Storage
+
+        updateLocalStorage();
+
+
+        //  Clear the Input Fields
         text.value = '';
         amount.value = '';
 
@@ -80,6 +92,9 @@ function updateValues() {
 function removeTransaction(id){
     transactions = transactions.filter(transaction => transaction.id !== id);
     init()
+    //  Update Local Storage
+
+    updateLocalStorage();
 }
 
 //Init App
@@ -89,7 +104,11 @@ function init() {
     transactions.forEach(addTransactionDom);
     updateValues();
 }
+//Update local storage transaction
 
+function updateLocalStorage(){
+    localStorage.setItem('transaction', JSON.stringify(transactions));
+}
 init();
 
 form.addEventListener('submit', addTransaction);
