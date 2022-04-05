@@ -22,12 +22,46 @@ function addTransactionDom(transaction) {
 
     const item = document.createElement('li');
     //Add class based on sign
-    item.classList.add(transaction.amount < 0 ? 'minus' : 'add');
+    item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
     item.innerHTML = `
         ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
         <button class="delete-btn">x</button>
     `;
+    
+    //Append itemsEl into list El
+
+    list.appendChild(item);
 
 }
+
+//Update the balane, income and expense
+
+function updateValues() {
+    const amounts = transactions.map( transaction => transaction.amount);
+    console.log(amounts);
+
+    const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+
+    const income = amounts
+                        .filter(item => item > 0)
+                        .reduce((acc, item) => (acc += item), 0)
+                        .toFixed(2);
+    
+    const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
+
+    balance.innerText = `$${total}`;
+    moneyMinus.innerText = `$${expense}`;
+    moneyPlus.innerText = `$${income}`;
+}
+
+//Init App
+
+function init() {
+    list.innerHTML = '';
+    transactions.forEach(addTransactionDom);
+    updateValues();
+}
+
+init();
 
 addTransactionDom(transactions);
